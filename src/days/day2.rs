@@ -40,14 +40,8 @@ fn part2(parsed_input: &Vec<Vec<usize>>) -> usize {
     sum
 } 
 
-// 111111111111 / 1001001001 = 111
-// 111111111111 / 111111111111 = 1
-// 212121212121 / 10101010101 = 21
-// 123123123123 / 1001001001 = 123
-// 123412341234 / 100010001 = 1234
-// 123456123456 / 1000001 = 123456
-
 // Check if it is a sequence
+// How it works: It constructs numbers like 1111111 (or 101010, 1001001, 100001) that can be used to create sequences like this, and then we use the modulo to see if it is a sequence of that pattern. We could also then use the division operator so get the sequence.
 fn is_sequence_num(id: usize) -> bool{
     let length = id.ilog10()+1; 
     // println!("length: {length}");
@@ -55,7 +49,6 @@ fn is_sequence_num(id: usize) -> bool{
         if length % seq_length != 0 {continue;}
         // print!("seq_length: {seq_length}\t");
         let nr_sequences = length/seq_length;
-        if nr_sequences < 2 {println!("Why it be less than two, id: {id}")}
         let base_length = length-seq_length;
         let mut divisor = usize::pow(10,base_length) + 1;
         for i in 2..nr_sequences{
@@ -69,6 +62,15 @@ fn is_sequence_num(id: usize) -> bool{
     }  
     return false;
 }
+
+
+// Example:
+// 111111111111 / 1001001001 = 111
+// 111111111111 / 111111111111 = 1
+// 212121212121 / 10101010101 = 21
+// 123123123123 / 1001001001 = 123
+// 123412341234 / 100010001 = 1234
+// 123456123456 / 1000001 = 123456
 
 
 /*
