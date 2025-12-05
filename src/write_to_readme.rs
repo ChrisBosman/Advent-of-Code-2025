@@ -3,26 +3,21 @@ use std::fs;
  
 pub(crate) 
 fn write_benchmark(day: u8, score: String){ 
-    let mut content = match fs::read_to_string("readme.md") {
+    let content = match fs::read_to_string("readme.md") {
         Ok(contents) => {contents},
-        Err(err) => {println!("[Error] Failed to open 'readme.md'");return;},
+        Err(err) => {println!("[Error] Failed to open 'readme.md': {err}");return;},
     };
 
     let parts: Vec<_> = content.split("id=\"benchmark\"").collect();
     let mut benchmark_parts = "".to_string();
     for line in parts[1].lines(){
         if line.contains(&format!("|{:<2}|",day)) {
-            let mut line = line.replace("🌑", "⭐");
-            // Check if it already contains some time score
-            if line.contains("Time: ") {
-                let parts: Vec<_> = line.split("Time: ").collect();
-                line = format!("{}Time: {}|",parts[0],score);
-            }else{
-                line.pop();
-                line += &format!(" Time: {}|",score);
-            }
+            // Write score
+            let mut cols: Vec<String> = line.replace("🌑", "⭐").split("|").map(|f| f.to_string()).collect();  
+            // cols: ["", "2 ", "⭐", "⭐", " 358.66ms", ""]
+            cols[4] = format!(" {} ",score);
             if benchmark_parts != "" {benchmark_parts += "\n";}
-            benchmark_parts += &line;
+            benchmark_parts += &cols.join("|");
             continue;
         }
         if benchmark_parts != "" {benchmark_parts += "\n";}
@@ -32,6 +27,6 @@ fn write_benchmark(day: u8, score: String){
     
     match fs::write("readme.md", body) {
         Ok(_) => {},
-        Err(_) => {},
+        Err(err) => {println!("[Error] Failed to write to 'readme.md': {err}")},
     };
 }

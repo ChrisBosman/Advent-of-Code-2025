@@ -1,12 +1,7 @@
-use colored::Colorize; 
- 
 pub(crate) 
-fn run(input: String) -> (usize, usize){ 
-    println!("{}","Day 3".bright_green().bold()); 
-
+fn run(input: &String) -> (usize, usize){ 
     let solution1 = part1(&input);
     let solution2 = part2(&input);
-
     
     return (solution1 as usize, solution2 as usize); 
 }

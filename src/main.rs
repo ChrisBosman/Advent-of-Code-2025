@@ -74,11 +74,11 @@ fn main() {
 
     let now = Instant::now();    
     // Running the day
-    let result = match run_one_day(day, input) {
+    let result = match run_one_day(day, &input, true) {
         Some(value) => value,
         None => return,
     };
-    let elapsed_time = now.elapsed().as_secs_f32();
+    let elapsed_time = now.elapsed().as_nanos();
 
     // Validate the outputs
     if test_mode {
@@ -99,25 +99,32 @@ fn main() {
         println!("Part 1:\n  {}",format!("{}", result.0).truecolor(100,100,100));
         println!("Part 2:\n  {}",format!("{}", result.1).truecolor(100,100,100));
     }
-    println!("\n{}",format!("Elapsed time {}s",elapsed_time).truecolor(0, 100, 100));
+    println!("\n{}",format!("Elapsed time {}",fancy_print_time_ns(elapsed_time as f32)).truecolor(0, 100, 100));
 }
 
 fn run_benchmark(day: u8, input: String) -> Option<String> {
     let now: Instant = Instant::now();    
     // Run onces to get the approximate time
-    run_one_day(day, input.clone())?;
+    run_one_day(day, &input, false)?;
     let mut elapsed_time = now.elapsed().as_nanos();
     // See if we can rerun it within the allocated time
-    let nr_runs = BENCHMARK_RUN_TIME as u128 / (elapsed_time*1000);
+    let nr_runs = BENCHMARK_RUN_TIME as u128 / (elapsed_time/1e6 as u128);
+    println!("Running {} times, it should take around: {}",&nr_runs, fancy_print_time_ns((nr_runs*elapsed_time) as f32));
     let now: Instant = Instant::now();    
     for _ in 0..nr_runs{
-        run_one_day(day, input.clone())?;
+        run_one_day(day, &input, false)?;
     }
     elapsed_time += now.elapsed().as_nanos();
     elapsed_time = elapsed_time/(nr_runs+1);
 
-    let mut units = "ns"; //        1002   1.11
-    let mut time = elapsed_time as f32;
+    let time = elapsed_time as f32;
+    let time_str = fancy_print_time_ns(time);
+    println!("{}",format!("Average time: {time_str}").truecolor(0, 100, 100));
+    return Some(time_str);
+}
+
+fn fancy_print_time_ns(mut time: f32) -> String{
+    let mut units = "ns";
     if time > 1000_f32 {          
         time /= 1000_f32;
         units = "us"
@@ -130,16 +137,16 @@ fn run_benchmark(day: u8, input: String) -> Option<String> {
         time /= 1000_f32;
         units = "s"
     }
-    if time > 60_f32 {
+    if units == "s" && time > 60_f32 {
         time /= 60_f32;
         units = "m"
     }
     time = (time*100_f32).floor()/100_f32;
-    println!("{}",format!("Elapsed time {}{}",time,units).truecolor(0, 100, 100));
-    return Some(time.to_string()+units);
+    time.to_string()+units
 }
 
-fn run_one_day(day: u8, input: String) -> Option<(usize, usize)> {
+fn run_one_day(day: u8, input: &String, print_day_name: bool) -> Option<(usize, usize)> {
+    if print_day_name {println!("{}",format!("Day {day}").bright_green().bold());}
     let result = match day {
         0 => {println!("{}","[Error] Invalid day argument".bright_red());return None;},
         1 => days::day1::run(input),

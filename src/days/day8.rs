@@ -1,7 +1,4 @@
-use colored::Colorize; 
- 
 pub(crate) 
-fn run(input: String) -> (usize, usize){ 
-    println!("{}","Day 8".bright_green().bold()); 
+fn run(input: &String) -> (usize, usize){ 
     return (0, 0); 
 } 
