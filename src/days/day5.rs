@@ -1,7 +1,7 @@
 use colored::Colorize; 
  
 pub(crate) 
-fn run(input: String) -> (usize, usize){ 
+fn run(input: &String) -> (usize, usize){ 
     println!("{}","Day 5".bright_green().bold()); 
 
     let (ranges, ids) = parse_input(input);

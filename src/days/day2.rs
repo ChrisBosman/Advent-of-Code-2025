@@ -1,8 +1,5 @@
-use colored::Colorize; 
- 
 pub(crate) 
-fn run(input: String) -> (usize, usize){ 
-    println!("{}","Day 2".bright_green().bold()); 
+fn run(input: &String) -> (usize, usize){ 
     let parsed_input = input.split(',').map(|ranges| ranges.split('-').map(|id| id.parse::<usize>().expect(&format!("Can't parse {}",id))).collect::<Vec<usize>>()).collect::<Vec<Vec<usize>>>();
 
     let part1_sol = part1(&parsed_input);
