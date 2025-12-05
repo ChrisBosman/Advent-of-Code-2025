@@ -1,9 +1,5 @@
-use colored::Colorize; 
- 
 pub(crate) 
-fn run(input: String) -> (usize, usize){ 
-    println!("{}","Day 4".bright_green().bold()); 
-
+fn run(input: &String) -> (usize, usize){ 
     // Parse input to a matrix, True if there is a paper roll (@)
     let mut matrix: Vec<Vec<bool>> = input.lines().map(|line| line.chars().map(|c| if c == '@' {true} else {false}).collect()).collect(); 
     // Part1

@@ -1,10 +1,6 @@
-use colored::Colorize; 
- 
 pub(crate) 
-fn run(input: String) -> (usize, usize){ 
-    println!("{}","Day 5".bright_green().bold()); 
-
-    let (ranges, ids) = parse_input(input);
+fn run(input: &String) -> (usize, usize){ 
+    let (ranges, ids) = parse_input(&input);
 
     let sol1 = part1(&ranges, &ids);
     let merged = merge_ranges(&ranges);
@@ -25,7 +21,7 @@ fn part1(ranges: &Vec<Vec<u64>>, ids: &Vec<u64>) -> usize {
     sol1
 }
 
-fn parse_input(input: String) -> (Vec<Vec<u64>>, Vec<u64>) {
+fn parse_input(input: &String) -> (Vec<Vec<u64>>, Vec<u64>) {
     let mut ranges: Vec<Vec<u64>> = Vec::new();
     let mut ids: Vec<u64> = Vec::new();
     let mut collect_ids = false;
