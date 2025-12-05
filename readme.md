@@ -14,10 +14,14 @@ How to use:
 cargo r <day number> [t]
 `
 
+
+<div id="benchmark">
+Runtime:
+
 |Day| |||
 |---|---|---|---|
-|1 |⭐|⭐||
-|2 |⭐|⭐||
+|1 |⭐|⭐| Time: 3.88ms|
+|2 |⭐|⭐| Time: 6.03m|
 |3 |⭐|⭐||
 |4 |⭐|⭐||
 |5 |🌑|🌑||
@@ -29,5 +33,6 @@ cargo r <day number> [t]
 |11|🌑|🌑||
 |12|🌑|🌑||
 
+</div id="benchmark">
 
 </div>
