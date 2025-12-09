@@ -3,3 +3,4 @@
 session_token
 /inputs
 /inputs_tests
+src/days/day8_old.rs
