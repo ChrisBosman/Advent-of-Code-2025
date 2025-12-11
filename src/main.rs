@@ -7,7 +7,7 @@ mod download_input;
 mod write_to_readme;
 
 const MAX_TERMINAL_LENGTH: usize = 100;
-const STARS: usize = 15;
+const STARS: usize = 17;
 const BENCHMARK_RUN_TIME: usize = 10000;  // Run time for the benchmarks (ms) (10s)
 
 fn main() {

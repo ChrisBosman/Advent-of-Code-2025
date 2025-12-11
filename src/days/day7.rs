@@ -1,3 +1,11 @@
+use std::collections::VecDeque;
+
+struct Node {
+    x: usize,
+    y: usize,
+    multiplier: usize
+}
+
 pub(crate) 
 fn run(input: &String) -> (usize, usize){ 
     let matrix: Vec<Vec<u8>> = input.lines().map(|line| line.chars().map(|c| if c == '^' {1} else if c=='S' {2} else {0}).collect()).collect();
@@ -5,68 +13,52 @@ fn run(input: &String) -> (usize, usize){
     let starting_index = (val / matrix[0].len(), val % matrix[0].len());
 
     let sol1 = part1(&matrix, starting_index);
-    let sol2 = part2(&matrix, starting_index);
-
-    // for i in 0..matrix.len() {
-    //     for j in 0..matrix[i].len() {
-    //         print!(" {}",match mod_matrix[i][j] {
-    //             1 => {'^'},
-    //             2 => {'S'},
-    //             3 => {'v'},
-    //             _ => {'.'},
-    //         })
-    //     }
-    //     print!("\n");
-    // }
+    let sol2 = breath_first(starting_index, &matrix);
 
     return (sol1, sol2); 
-    // 3178 too low
-}
-
-fn part2(matrix: &Vec<Vec<u8>>, starting_index: (usize, usize)) -> usize {
-    // Part 2, Just depth first and increment count when reaching the bottom
-    let mut mod_matrix: Vec<Vec<usize>> = vec![vec![0; matrix[0].len()];matrix.len()];
-    depth_first(starting_index.0, starting_index.1, matrix, &mut mod_matrix)
 }
 
 fn breath_first(starting_index: (usize, usize), matrix: &Vec<Vec<u8>>) -> usize{
     let mut sum = 0;
-    // let frontier = 
+    let mut frontier: VecDeque<Node> = VecDeque::new();
+    frontier.push_back(Node{x: starting_index.1, y: starting_index.0, multiplier: 1});
 
+    loop {
+        // Take top element
+        let mut node;
+        match frontier.pop_front() {
+            Some(val) => {node=val},
+            None => {break;},
+        }
+        // Check if it reached the bottom
+        if node.y == matrix.len()-1 {
+            sum += node.multiplier; 
+            continue;
+        }
+
+        // Increment one step
+        let mut new_nodes = Vec::new();
+        node.y += 1;
+        match matrix[node.y][node.x] {
+            1 => { // '^'
+                    if node.x < matrix[0].len()-1 { new_nodes.push(Node { x: node.x+1, y: node.y, multiplier: node.multiplier }); }
+                    if node.x > 0 { node.x -= 1; new_nodes.push(node); }
+                },
+            _ => new_nodes.push(node),
+        }
+
+        // Check if there is already one on this position in the frontier, if not push
+        for new_node in new_nodes {
+            match frontier.iter().position(|n| n.x == new_node.x && n.y == new_node.y) {
+                Some(index) => frontier[index].multiplier += new_node.multiplier,
+                None => frontier.push_back(new_node),
+            }
+        }
+
+        // No need to sort, since all path are the same length
+    }
 
     return sum;
-}
-
-fn depth_first(i: usize, j: usize, matrix: &Vec<Vec<u8>>, mod_matrix: &mut Vec<Vec<usize>>) -> usize{
-    let mut sum = 0;
-    // println!("Hi");
-    for y in (i+1)..matrix.len(){
-        if y == matrix.len()-1 {return 1;}
-        if matrix[y][j] == 0 {continue;} 
-        if mod_matrix[y][j] != 0 {
-            sum += mod_matrix[y][j];
-            break;
-        }
-        
-        // Check left
-        let mut left_val = 0;
-        if j>0 {
-            left_val = depth_first(y, j-1, matrix, mod_matrix);
-        }
-        // Check right
-        let mut right_val = 0;
-        if j<matrix[y].len()-1{
-            right_val = depth_first(y, j+1, matrix, mod_matrix);
-        }
-
-        // Update mod_matrix
-        mod_matrix[i][j] = left_val+right_val;
-
-        // Update sum
-        sum += mod_matrix[i][j];
-        break;
-    }
-    sum
 }
 
 fn part1(matrix: &Vec<Vec<u8>>, starting_index: (usize, usize)) -> usize {
@@ -117,11 +109,3 @@ fn check_depth_first(i: usize,j: usize,mod_matrix: &mut Vec<Vec<u8>>,starting_in
     }
     return false;
 }
-
-
-
-// 1: 2
-// 2: 3
-// 3: 4 
-// 4: 5 or 6
-// 6: 8 (two beams hit the same thing)
